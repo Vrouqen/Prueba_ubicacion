@@ -1,7 +1,7 @@
 services:
 
   dbUsers:
-    image: mysql
+    image: mysql:8.0
     restart: always
     ports:
       - "1001:3306"
@@ -12,7 +12,7 @@ services:
       - ./dbUsers/init.sql:/docker-entrypoint-initdb.d/init.sq
       
   dbIncome:
-    image: mysql
+    image: mysql:8.0
     restart: always
     ports:
       - "1002:3307"
@@ -23,7 +23,7 @@ services:
       - ./dbIncome/init.sql:/docker-entrypoint-initdb.d/init.sq
 
   dbCost:
-    image: mysql
+    image: mysql:8.0
     restart: always
     ports:
       - "1003:3308"
