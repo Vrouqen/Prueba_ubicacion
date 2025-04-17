@@ -1,11 +1,13 @@
+USE dbUsers;
+
 CREATE TABLE Users(
-    id_user INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id_user INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(10),
     password VARCHAR(20)
 );
 
 CREATE TABLE Users_Info(
-    id_user_info INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id_user_info INT AUTO_INCREMENT PRIMARY KEY,
     id_user INT,
     name VARCHAR(50),
     email VARCHAR(50),
@@ -15,7 +17,7 @@ CREATE TABLE Users_Info(
 );
 
 CREATE TABLE Users_Sessions(
-    id_user_session INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id_user_session INT AUTO_INCREMENT PRIMARY KEY,
     id_user INT,
     log_in BOOLEAN,
     date DATETIME,
