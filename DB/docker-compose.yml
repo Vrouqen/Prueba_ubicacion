@@ -15,10 +15,10 @@ services:
     image: mysql:8.0
     restart: always
     ports:
-      - "1002:3307"
+      - "1002:3306"
     environment:
       MYSQL_DATABASE: dbIncomes
-      MYSQL_ROOT_PASSWORD: dbIncome123
+      MYSQL_ROOT_PASSWORD: dbincome123
     volumes:
       - ./dbIncomes/init.sql:/docker-entrypoint-initdb.d/init.sql
 
@@ -26,9 +26,9 @@ services:
     image: mysql:8.0
     restart: always
     ports:
-      - "1003:3308"
+      - "1003:3306"
     environment:
       MYSQL_DATABASE: dbCosts
-      MYSQL_ROOT_PASSWORD: dbCost123
+      MYSQL_ROOT_PASSWORD: dbcost123
     volumes:
       - ./dbCosts/init.sql:/docker-entrypoint-initdb.d/init.sql
