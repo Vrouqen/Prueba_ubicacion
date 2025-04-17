@@ -6,13 +6,28 @@
     <title>Document</title>
 </head>
 <body>
-    <form>
-        <input type="text" name="username" id="username">
-        <br>
-        <input type="password" name="password" id="password">
-        <br>
-        <button type="submit">Iniciar sesion</button>
-    </form>
+    <h2>Welcome to my page</h2>
+    <h4>Here are the users registered</h4>
+    <div id="users"></div>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const users = await fetch("http://127.0.0.1:8081/users/load_users");
+            
+            const usersjson = await users.json();
+            console.log(usersjson);
+            const usersdiv = document.getElementById('users');
+
+            for (const user of usersjson.result){
+                const user_info = document.createElement("div");
+                user_info.innerHTML = `
+                    <label>id_user: ${user.id_user}</label>
+                    <br><label>username: ${user.username}</label>
+                    <br><label>password: ${user.password}</label><br><br>
+                `;
+                usersdiv.appendChild(user_info);
+            }
+        });
+    </script>
 </body>
 </html>
