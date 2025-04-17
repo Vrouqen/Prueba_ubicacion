@@ -1,0 +1,34 @@
+services:
+
+  dbUsers:
+    image: mysql
+    restart: always
+    ports:
+      - "1001:3306"
+    environment:
+      MYSQL_DATABASE: dbUsers
+      MYSQL_ROOT_PASSWORD: dbusers123
+    volumes:
+      - ./dbUsers/init.sql:/docker-entrypoint-initdb.d/init.sq
+      
+  dbIncome:
+    image: mysql
+    restart: always
+    ports:
+      - "1002:3307"
+    environment:
+      MYSQL_DATABASE: dbIncome
+      MYSQL_ROOT_PASSWORD: dbIncome123
+    volumes:
+      - ./dbIncome/init.sql:/docker-entrypoint-initdb.d/init.sq
+
+  dbCost:
+    image: mysql
+    restart: always
+    ports:
+      - "1003:3308"
+    environment:
+      MYSQL_DATABASE: dbCost
+      MYSQL_ROOT_PASSWORD: dbCost123
+    volumes:
+      - ./dbCost/init.sql:/docker-entrypoint-initdb.d/init.sq
