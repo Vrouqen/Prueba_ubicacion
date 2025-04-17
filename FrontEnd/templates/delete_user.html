@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App</title>
+</head>
+<body>
+    <h4>Delete user</h4>
+    <form id="userform">
+        <label>id_user:</label>
+        <input type="text" id="id_user" name="id_user">
+        <br>
+        <button type="submit">Delete</button>
+    </form>
+
+    <div id="responseMessage"></div>
+
+    <br>
+    <a href="/"><button>Back</button></a>
+
+    <script>
+        document.getElementById("userform").addEventListener("submit", async(e) => {
+            e.preventDefault(); 
+
+            const form = new FormData();
+            form.append("id_user", document.getElementById("id_user").value);
+
+            const response = await fetch("http://127.0.0.1:8081/users/delete_user", {
+                method: "POST",
+                body: form
+            });
+
+            const result = await response.json();
+
+            document.getElementById("responseMessage").innerText = result.message+" - id_user: "+result.user;
+        });
+
+    </script>
+</body>
+</html>
