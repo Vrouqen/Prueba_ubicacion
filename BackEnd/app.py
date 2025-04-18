@@ -29,6 +29,31 @@ conn3 = mysql.connector.connect(
     database='dbCosts'
 )
 
+@app.route("/users/login", methods=["POST"])
+def login():
+    # Form params
+    username = request.form['username']
+    password = request.form['password']
+
+    cursorUsers = connDBUsers.cursor()
+    cursorUsers.execute("SELECT * FROM Users")
+    usersjson = cursorUsers.fetchall()
+
+    id_user = 0
+
+    for row in usersjson:
+        if row[1]==username and row[2]==password:
+            id_user = row[0]
+            return jsonify({
+                'message': 'Logged succesfully',
+                'id_user': id_user
+            })
+    
+    return jsonify({
+        'message': 'Incorrect username or password',
+        'id_user': id_user
+    })
+
 @app.route("/users/load_users", methods=["GET"])
 def load_users():
     cursorUsers = connDBUsers.cursor()
@@ -45,9 +70,24 @@ def load_users():
         'description': row[5]}
         for row in usersjson]
 
+    cursorUsers.close()
+    return {'result': result }
+
+@app.route("/users/search_user/<id_user_search>")
+def search_user(id_user_search):
+    cursorUsers = connDBUsers.cursor()
+    cursorUsers.execute("SELECT U.id_user, U.username, UI.name, UI.email, UI.description " \
+    "FROM Users U, Users_Info UI WHERE U.id_user=UI.id_user and U.id_user=%s;", (id_user_search,))
+    usersjson = cursorUsers.fetchall()
+
+    result = {
+        'id_user': usersjson[0][0], 
+        'username': usersjson[0][1], 
+        'name': usersjson[0][2],  
+        'email': usersjson[0][3],  
+        'description': usersjson[0][4]}
 
     cursorUsers.close()
-
     return {'result': result }
 
 @app.route("/users/insert_user", methods=["POST"])

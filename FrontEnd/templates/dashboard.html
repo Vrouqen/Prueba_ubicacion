@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App</title>
+</head>
+<body>
+    <h1>Welcome <label id="name"></label></h1>
+
+    <br>
+    <label>Username: <span id="username"></span></label><br>
+    <label>E-mail: <span id="email"></span></label><br>
+    <label>Description: <span id="description"></span></label><br>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async()=>{
+            const id_user = localStorage.getItem("id_user");
+            if (!id_user) {
+                window.location.href = "/";
+            }
+            
+            const backendURL = `http://${window.location.hostname}:8081/users/search_user/${id_user}`;
+            const response = await fetch(backendURL);
+            const userdata = await response.json();
+
+            const nameLabel = document.getElementById("name").innerText = userdata.result.name;
+            const usernameLabel = document.getElementById("username").innerText = userdata.result.username;
+            const emailLabel = document.getElementById("email").innerText = userdata.result.email;
+            const descriptionLabel = document.getElementById("description").innerText = userdata.result.description;
+        });
+    </script>
+</body>
+</html>

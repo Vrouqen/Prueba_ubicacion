@@ -1,11 +1,15 @@
-from flask import Flask, render_template 
+from flask import Flask, render_template, session, url_for
 
 app = Flask(__name__)
 
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("login.html")
+
+@app.route("/dashboard")
+def dashboard():
+    return render_template("dashboard.html")
 
 @app.route("/insert_user")
 def insert_user():
