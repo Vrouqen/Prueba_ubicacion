@@ -6,24 +6,24 @@ app = Flask(__name__)
 CORS(app)
 
 conn1 = mysql.connector.connect(
-    host='localhost',
-    port=1001,  
+    host='dbusers',
+    port=3306,  
     user='root',
     password='dbusers123',
     database='dbUsers'
 )
 
 conn2 = mysql.connector.connect(
-    host='localhost',
-    port=1002,  
+    host='dbincomes',
+    port=3306,  
     user='root',
     password='dbincome123',
     database='dbIncomes'
 )
 
 conn3 = mysql.connector.connect(
-    host='localhost',
-    port=1003,  
+    host='dbcosts',
+    port=3306,  
     user='root',
     password='dbcost123',
     database='dbCosts'
@@ -75,4 +75,4 @@ def delete_user():
                     'user': id_user})
 
 if __name__=="__main__":
-    app.run(debug=True, port=8081)
+    app.run(host="0.0.0.0", debug=True, port=8081)

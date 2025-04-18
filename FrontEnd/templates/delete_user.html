@@ -19,23 +19,6 @@
     <br>
     <a href="/"><button>Back</button></a>
 
-    <script>
-        document.getElementById("userform").addEventListener("submit", async(e) => {
-            e.preventDefault(); 
-
-            const form = new FormData();
-            form.append("id_user", document.getElementById("id_user").value);
-
-            const response = await fetch("http://127.0.0.1:8081/users/delete_user", {
-                method: "POST",
-                body: form
-            });
-
-            const result = await response.json();
-
-            document.getElementById("responseMessage").innerText = result.message+" - id_user: "+result.user;
-        });
-
-    </script>
+    <script src="./static/delete_user.js"></script>
 </body>
 </html>

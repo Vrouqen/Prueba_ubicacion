@@ -15,24 +15,6 @@
     <br>
     <a href="/delete_user"><button>Delete user</button></a>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", async () => {
-            const users = await fetch("http://127.0.0.1:8081/users/load_users");
-            
-            const usersjson = await users.json();
-            console.log(usersjson);
-            const usersdiv = document.getElementById('users');
-
-            for (const user of usersjson.result){
-                const user_info = document.createElement("div");
-                user_info.innerHTML = `
-                    <label>id_user: ${user.id_user}</label>
-                    <br><label>username: ${user.username}</label>
-                    <br><label>password: ${user.password}</label><br><br>
-                `;
-                usersdiv.appendChild(user_info);
-            }
-        });
-    </script>
+    <script src="./static/index.js"></script>
 </body>
 </html>

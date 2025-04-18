@@ -7,7 +7,7 @@
 </head>
 <body>
     <h4>Insert user</h4>
-    <form action="http://127.0.0.1:8081/users/insert_user" method="post" id="userform">
+    <form action="http://localhost:8081/users/insert_user" method="post" id="userform">
         <label>Username:</label>
         <input type="text" id="user" name="user">
         <br>
@@ -23,27 +23,6 @@
     <br>
     <a href="/"><button>Back</button></a>
     
-
-    <script>
-        // Detecta cuando se envía el formulario
-        document.getElementById("userform").addEventListener("submit", async (e) => {
-            e.preventDefault(); // Evita que se envía el formulario normalmente
-
-            const formData = new FormData(); // Creamos un formdata para almacenar los valores que se enviarán a metodo post
-            formData.append("user", document.getElementById("user").value);
-            formData.append("password", document.getElementById("password").value);
-
-            // Se obtiene la respuesta haciendo una solicitud al metodo post para insertar un usuario
-            const response = await fetch("http://127.0.0.1:8081/users/insert_user", { 
-                method: "POST",
-                body: formData
-            });
-
-            const result = await response.json(); // Se convierte en json
-
-            // Se agrega la respuesta al html para que redireccione a la url de la api
-            document.getElementById("responseMessage").innerText = result.message + ": " + result.user;
-        });
-    </script>
+    <script src="./static/insert_user.js"></script>
 </body>
 </html>

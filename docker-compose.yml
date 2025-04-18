@@ -1,6 +1,6 @@
 services:
 
-  dbUsers:
+  dbusers:
     image: mysql:8.0
     restart: always
     ports:
@@ -9,9 +9,9 @@ services:
       MYSQL_DATABASE: dbUsers
       MYSQL_ROOT_PASSWORD: dbusers123
     volumes:
-      - ./dbUsers/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./DB/dbUsers/init.sql:/docker-entrypoint-initdb.d/init.sql
       
-  dbIncomes:
+  dbincomes:
     image: mysql:8.0
     restart: always
     ports:
@@ -20,9 +20,9 @@ services:
       MYSQL_DATABASE: dbIncomes
       MYSQL_ROOT_PASSWORD: dbincome123
     volumes:
-      - ./dbIncomes/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./DB/dbIncomes/init.sql:/docker-entrypoint-initdb.d/init.sql
 
-  dbCosts:
+  dbcosts:
     image: mysql:8.0
     restart: always
     ports:
@@ -31,4 +31,20 @@ services:
       MYSQL_DATABASE: dbCosts
       MYSQL_ROOT_PASSWORD: dbcost123
     volumes:
-      - ./dbCosts/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./DB/dbCosts/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  backend:
+    build: ./BackEnd
+    ports:
+      - "8081:8081"
+    depends_on:
+      - dbusers
+      - dbincomes
+      - dbcosts
+
+  frontend:
+    build: ./FrontEnd
+    ports:
+      - "8080:8080"
+    depends_on:
+      - backend
