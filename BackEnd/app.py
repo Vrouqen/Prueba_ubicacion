@@ -5,7 +5,7 @@ import mysql.connector
 app = Flask(__name__)
 CORS(app)
 
-conn1 = mysql.connector.connect(
+connDBUsers = mysql.connector.connect(
     host='dbusers',
     port=3306,  
     user='root',
@@ -31,38 +31,58 @@ conn3 = mysql.connector.connect(
 
 @app.route("/users/load_users", methods=["GET"])
 def load_users():
-    cursorUsers = conn1.cursor()
-    cursorUsers.execute("SELECT * FROM Users")
+    cursorUsers = connDBUsers.cursor()
+    cursorUsers.execute("SELECT U.id_user, U.username, U.password, UI.name, UI.email, UI.description " \
+    "FROM Users U, Users_Info UI WHERE U.id_user=UI.id_user;")
     usersjson = cursorUsers.fetchall()
-    cursorUsers.close()
 
     result = [{
         'id_user': row[0], 
         'username': row[1], 
-        'password': row[2]} 
+        'password': row[2],
+        'name': row[3], 
+        'email': row[4], 
+        'description': row[5]}
         for row in usersjson]
+
+
+    cursorUsers.close()
 
     return {'result': result }
 
 @app.route("/users/insert_user", methods=["POST"])
 def insert_user():
-    cursorUsers = conn1.cursor()
 
-    # Definition of SQL instruction and get params of method
-    query = "INSERT INTO Users (username, password) VALUES (%s, %s);"
-    user = request.form['user']
+    cursorUsers = connDBUsers.cursor()
+
+    # Form params
+    username = request.form['username']
     password = request.form['password']
+    name = request.form['name']
+    email = request.form['email']
+    description = request.form['description']
 
-    cursorUsers.execute(query, (user, password))
-    conn1.commit()
+    # Definition of SQL instruction to insert on Users
+    query = "INSERT INTO Users (username, password) VALUES (%s, %s);"
+    cursorUsers.execute(query, (username, password))
+
+    # Obtain the id_user auto generated
+    query = "SELECT id_user FROM Users WHERE username=%s;"
+    cursorUsers.execute(query, (username,))
+    id_user = cursorUsers.fetchall() 
+
+    # Definition of SQL instruction to insert on Users_Info
+    query = "INSERT INTO Users_Info (id_user, name, email, description) VALUES (%s,%s,%s,%s);"
+    cursorUsers.execute(query, (id_user[0][0], name, email, description))
+
+    connDBUsers.commit()
     cursorUsers.close()
 
-    return jsonify({'message': 'User inserted succesfully',
-                    'user': user+" "+password})
+    return jsonify({'message': 'User inserted succesfully'})
 
 @app.route("/users/delete_user", methods=["POST"])
 def delete_user():
-    cursorUsers = conn1.cursor()
+    cursorUsers = connDBUsers.cursor()
 
     # Definition of SQL instruction and get params of method
     query = "DELETE FROM Users WHERE id_user=%s"

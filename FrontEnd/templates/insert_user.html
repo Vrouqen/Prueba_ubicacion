@@ -7,13 +7,21 @@
 </head>
 <body>
     <h4>Insert user</h4>
-    <form action="http://localhost:8081/users/insert_user" method="post" id="userform">
+    <form id="userform">
         <label>Username:</label>
-        <input type="text" id="user" name="user">
+        <input type="text" id="username" name="username">
         <br>
-
         <label>Password:</label>
         <input type="password" id="password" name="password">
+        <br>
+        <label>Name:</label>
+        <input type="text" id="name" name="name">
+        <br>
+        <label>E-mail:</label>
+        <input type="text" id="email" name="email">
+        <br>
+        <label>Description:</label>
+        <input type="text" id="description" name="description">
         <br>
         <button type="submit">Save</button>
     </form>

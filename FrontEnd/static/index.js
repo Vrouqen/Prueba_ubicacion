@@ -11,7 +11,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         user_info.innerHTML = `
             <label>id_user: ${user.id_user}</label>
             <br><label>username: ${user.username}</label>
-            <br><label>password: ${user.password}</label><br><br>
+            <br><label>password: ${user.password}</label>
+            <br><label>name: ${user.name}</label>
+            <br><label>description: ${user.description}</label>
+            <br><label>email: ${user.email}</label><br><br>
         `;
         usersdiv.appendChild(user_info);
     }
