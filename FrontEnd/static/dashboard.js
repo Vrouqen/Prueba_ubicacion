@@ -16,6 +16,18 @@ document.addEventListener("DOMContentLoaded", async()=>{
 
 
 document.getElementById("logout_button").addEventListener("click", async()=>{
+    // Insert login on session table
+    const sessionURL = `http://${window.location.hostname}:8081/users/insert_session`;
+
+    const formdataSession = new FormData();
+    formdataSession.append('id_user', localStorage.getItem("id_user"));
+    formdataSession.append('log_in', 0);
+
+    await fetch(sessionURL, {
+        'body': formdataSession,
+        'method': "POST"
+    });
+
     localStorage.setItem("id_user", 0);
     window.location.href = "/";
 });

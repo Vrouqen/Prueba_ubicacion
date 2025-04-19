@@ -1,6 +1,7 @@
 from flask import Flask, render_template, url_for, request, jsonify
 from flask_cors import CORS
 import mysql.connector
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -52,6 +53,23 @@ def login():
         'id_user': 0
     })
 
+@app.route("/users/insert_session", methods=["POST"])
+def insert_session():
+
+    id_user = request.form['id_user']
+    log_in = request.form['log_in']
+    date = datetime.now()
+
+    cursorUsers = connDBUsers.cursor()
+    cursorUsers.execute("INSERT INTO Users_Sessions (id_user, log_in, date) VALUES (%s, %s, %s)",(id_user, log_in, date,))
+    
+    connDBUsers.commit()
+    cursorUsers.close()
+    return jsonify({
+        'message': 'Session inserted succesfully on DB'
+    })
+
+
 @app.route("/users/load_users", methods=["GET"])
 def load_users():
     cursorUsers = connDBUsers.cursor()
@@ -84,13 +102,12 @@ def search_user(id_user_search):
         'name': usersjson[0][2],  
         'email': usersjson[0][3],  
         'description': usersjson[0][4]}
-
+    
     cursorUsers.close()
     return {'result': result }
 
 @app.route("/users/insert_user", methods=["POST"])
 def insert_user():
-
     cursorUsers = connDBUsers.cursor()
 
     # Form params
@@ -127,6 +144,7 @@ def delete_user():
     id_user = request.form['id_user']
 
     cursorUsers.execute(query, (id_user,))
+    connDBUsers.commit()
     cursorUsers.close()
     
     return jsonify({'message': 'User deleted succesfully',
