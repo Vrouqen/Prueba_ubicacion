@@ -39,8 +39,6 @@ def login():
     cursorUsers.execute("SELECT * FROM Users")
     usersjson = cursorUsers.fetchall()
 
-    id_user = 0
-
     for row in usersjson:
         if row[1]==username and row[2]==password:
             id_user = row[0]
@@ -51,7 +49,7 @@ def login():
     
     return jsonify({
         'message': 'Incorrect username or password',
-        'id_user': id_user
+        'id_user': 0
     })
 
 @app.route("/users/load_users", methods=["GET"])
