@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", async()=>{
     const emailLabel = document.getElementById("email").innerText = userdata.result.email;
     const descriptionLabel = document.getElementById("description").innerText = userdata.result.description;
 
+    // Costos
     const backendCostsURL = `http://${window.location.hostname}:8081/costs/load_user_costs/${id_user}`;
     const responseCosts = await fetch(backendCostsURL);
     const usercosts = await responseCosts.json();
@@ -28,14 +29,39 @@ document.addEventListener("DOMContentLoaded", async()=>{
             `;
         costsTable.appendChild(row);
     }
-    const row_insert = document.createElement("tr");
-    row_insert.innerHTML = `
+    const row_insert_cost = document.createElement("tr");
+    row_insert_cost.innerHTML = `
         <td><input type="text" id="name_cost"></td>
         <td><input type="number" id="value_cost"></td>
         <td><input type="date" id="date_cost"></td>
         <td><input type="text" id="type_cost"></td>
         `;
-    costsTable.appendChild(row_insert);
+    costsTable.appendChild(row_insert_cost);
+
+    // Ingresos
+    const backendIncomesURL = `http://${window.location.hostname}:8081/incomes/load_user_incomes/${id_user}`;
+    const responseIncomes = await fetch(backendIncomesURL);
+    const userincomes = await responseIncomes.json();
+    
+    const incomesTable = document.getElementById("incomesTable");
+    for(const i of userincomes.result){
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${i.name}</td>
+            <td>${i.value}</td>
+            <td>${i.date}</td>
+            <td>${i.type_income}</td>
+            `;
+        incomesTable.appendChild(row);
+    }
+    const row_insert_income = document.createElement("tr");
+    row_insert_income.innerHTML = `
+        <td><input type="text" id="name_income"></td>
+        <td><input type="number" id="value_income"></td>
+        <td><input type="date" id="date_income"></td>
+        <td><input type="text" id="type_income"></td>
+        `;
+    incomesTable.appendChild(row_insert_income);
     
 });
 
@@ -52,6 +78,25 @@ document.getElementById("insert_cost_button").addEventListener("click", async()=
 
     await fetch(costURL, {
         'body': formdataCost,
+        'method': "POST"
+    });
+
+    window.location.href = "/dashboard";
+});
+
+document.getElementById("insert_income_button").addEventListener("click", async()=>{
+    // Insert login on session table
+    const costURL = `http://${window.location.hostname}:8081/incomes/insert_income`;
+
+    const formdataIncome = new FormData();
+    formdataIncome.append('id_user', localStorage.getItem("id_user"));
+    formdataIncome.append('name', document.getElementById("name_income").value);
+    formdataIncome.append('value', document.getElementById("value_income").value);
+    formdataIncome.append('date', document.getElementById("date_income").value);
+    formdataIncome.append('type_income', document.getElementById("type_income").value);
+
+    await fetch(costURL, {
+        'body': formdataIncome,
         'method': "POST"
     });
 

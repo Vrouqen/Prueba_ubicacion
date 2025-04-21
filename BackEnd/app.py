@@ -199,6 +199,55 @@ def insert_cost():
         'message': 'Cost inserted succesfully'
     })
 
+# Rutas para ingreso
+@app.route("/incomes/load_user_incomes/<id_user>", methods=["GET"])
+def load_user_incomes(id_user):
+    incomescursor = connDBIncomes.cursor()
+
+    query = 'SELECT NI.name, I.value, I.date, TI.type_income FROM Incomes I, Incomes_Names NI, Type_Income TI ' \
+    'WHERE I.id_user=%s and I.id_income=NI.id_income and I.id_income=TI.id_income;'
+
+    incomescursor.execute(query, (id_user,))
+    incomes_list = incomescursor.fetchall()
+
+    result = [{
+        'name': i[0],
+        'value': i[1],
+        'date': i[2],
+        'type_income': i[3],
+    }for i in incomes_list]
+
+    return jsonify({
+        'result':result})
+
+@app.route("/incomes/insert_income", methods=["POST"])
+def insert_income():
+    incomescursor = connDBIncomes.cursor()
+    
+    id_user = request.form['id_user']
+    name = request.form['name']
+    value = request.form['value']
+    date = request.form['date']
+    type_income = request.form['type_income']
+
+    query = "INSERT INTO Incomes (id_user, value, date) VALUES (%s, %s, %s);"
+    incomescursor.execute(query, (id_user, value, date))
+    
+    query = "SELECT LAST_INSERT_ID();"
+    incomescursor.execute(query)
+    id_income = incomescursor.fetchall()[0][0]
+
+    query = "INSERT INTO Incomes_Names (id_income, name) VALUES (%s, %s);"
+    incomescursor.execute(query, (id_income, name))
+
+    query = "INSERT INTO Type_Income (id_income, type_income) VALUES (%s, %s);"
+    incomescursor.execute(query, (id_income, type_income))
+    
+    connDBIncomes.commit()
+    return jsonify({
+        'message': 'Income inserted succesfully'
+    })
+
 
 if __name__=="__main__":
     app.run(host="0.0.0.0", debug=True, port=8081)
