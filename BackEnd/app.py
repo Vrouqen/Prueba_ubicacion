@@ -14,7 +14,7 @@ connDBUsers = mysql.connector.connect(
     database='dbUsers'
 )
 
-conn2 = mysql.connector.connect(
+connDBIncomes = mysql.connector.connect(
     host='dbincomes',
     port=3306,  
     user='root',
@@ -22,7 +22,7 @@ conn2 = mysql.connector.connect(
     database='dbIncomes'
 )
 
-conn3 = mysql.connector.connect(
+connDBCosts = mysql.connector.connect(
     host='dbcosts',
     port=3306,  
     user='root',
@@ -89,7 +89,7 @@ def load_users():
     cursorUsers.close()
     return {'result': result }
 
-@app.route("/users/search_user/<id_user_search>")
+@app.route("/users/search_user/<id_user_search>", methods=["GET"])
 def search_user(id_user_search):
     cursorUsers = connDBUsers.cursor()
     cursorUsers.execute("SELECT U.id_user, U.username, UI.name, UI.email, UI.description " \
@@ -149,6 +149,56 @@ def delete_user():
     
     return jsonify({'message': 'User deleted succesfully',
                     'user': id_user})
+
+# Rutas para costo
+@app.route("/costs/load_user_costs/<id_user>", methods=["GET"])
+def load_users_costs(id_user):
+    costscursor = connDBCosts.cursor()
+
+    query = 'SELECT CN.name, C.value, C.date, TP.type_cost FROM Costs C, Costs_Names CN, Type_Cost TP ' \
+    'WHERE C.id_user=%s and C.id_cost=CN.id_cost and C.id_cost=TP.id_cost;'
+
+    costscursor.execute(query, (id_user,))
+    costs_list = costscursor.fetchall()
+
+    result = [{
+        'name': c[0],
+        'value': c[1],
+        'date': c[2],
+        'type_cost': c[3],
+    }for c in costs_list]
+
+    return jsonify({
+        'result':result})
+
+@app.route("/costs/insert_cost", methods=["POST"])
+def insert_cost():
+    costscursor = connDBCosts.cursor()
+    
+    id_user = request.form['id_user']
+    name = request.form['name']
+    value = request.form['value']
+    date = request.form['date']
+    type_cost = request.form['type_cost']
+
+    query = "INSERT INTO Costs (id_user, value, date) VALUES (%s, %s, %s);"
+    costscursor.execute(query, (id_user, value, date))
+    
+    query = "SELECT LAST_INSERT_ID();"
+    costscursor.execute(query)
+    id_cost = costscursor.fetchall()[0][0]
+
+    query = "INSERT INTO Costs_Names (id_cost, name) VALUES (%s, %s);"
+    costscursor.execute(query, (id_cost, name))
+
+    query = "INSERT INTO Type_Cost (id_cost, type_cost) VALUES (%s, %s);"
+    costscursor.execute(query, (id_cost, type_cost))
+    
+    connDBCosts.commit()
+    return jsonify({
+        'message': 'Cost inserted succesfully'
+    })
+
 
 if __name__=="__main__":
     app.run(host="0.0.0.0", debug=True, port=8081)
